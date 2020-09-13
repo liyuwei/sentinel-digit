@@ -1,0 +1,2 @@
+# Sentinel default ProcessorSlots
+com.alibaba.csp.sentinel.slots.digit.digit.DigitSlot
