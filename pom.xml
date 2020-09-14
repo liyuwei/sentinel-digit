@@ -18,6 +18,14 @@
         <java.version>11</java.version>
     </properties>
 
+    <developers>
+        <developer>
+            <name>The Sentinel-digit Project Contributors</name>
+            <email>liyuwei870425@163.com</email>
+            <url>https://github.com/liyuwei/sentinel-digit</url>
+        </developer>
+    </developers>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
