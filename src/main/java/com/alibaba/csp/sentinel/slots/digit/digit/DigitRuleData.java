@@ -40,7 +40,6 @@ public class DigitRuleData {
         this.digitRule = digitRule;
         parse();
         parseType();
-
     }
 
     private void parseType() {
@@ -86,6 +85,7 @@ public class DigitRuleData {
 
     private void parseRandom() {
         if (this.digitRule.getDigitFilterType() != DigitFilterType.RANDOM) return;
+        // randomCollection = 可用来随机的池子
         List<Integer> randomCollection = new ArrayList<>();
 
         for (int i = 0; i < this.digitRule.getPassMolecule(); i++) {
@@ -94,13 +94,14 @@ public class DigitRuleData {
             }
         }
 
-        // 不用补位
-        if (randomCollection.size() >= this.digitRule.getPassDenominator()) {
+        // haveCount = 已经配置数量
+        int haveCount = this.digitRule.getPassMolecule() - randomCollection.size();
+        // 计算可随机的个数
+        int randomCount = this.digitRule.getPassDenominator() - haveCount;
+        // 不用补位//
+        if (randomCount < 1) {
             return;
         }
-
-        // 计算可随机的个数
-        int randomCount = this.digitRule.getPassDenominator() - randomCollection.size();
 
         Collections.shuffle(randomCollection);
         randomSet = randomCollection.subList(0, randomCount).stream().collect(Collectors.toSet());

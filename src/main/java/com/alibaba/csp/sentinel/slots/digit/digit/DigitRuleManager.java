@@ -44,29 +44,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DigitRuleManager {
 
-    private static volatile Map<String, List<DigitRule>> flowRules = new ConcurrentHashMap<String, List<DigitRule>>();
+    private static volatile Map<String, List<DigitRule>> digitRules = new ConcurrentHashMap<String, List<DigitRule>>();
 
     private static final DigitPropertyListener LISTENER = new DigitPropertyListener();
     private static SentinelProperty<List<DigitRule>> currentProperty = new DynamicSentinelProperty<List<DigitRule>>();
 
-
     static {
         currentProperty.addListener(LISTENER);
-        fixBug();
     }
 
-    public static final String KEY = "momodigit";
-
-    // TODO bug unfix
-    private static void fixBug() {
-        List<DigitRule> rules = new ArrayList<>();
-        DigitRule rule1 = new DigitRule();
-        rule1.setPassMolecule(100);
-        rule1.setPassDenominator(50);
-        rule1.setDigitFilterType(DigitFilterType.RANDOM);
-        rule1.setResource(KEY);
-        rules.add(rule1);
-        DigitRuleManager.loadRules(rules);
+    public static Map<String, List<DigitRule>> getDigitRules() {
+        return digitRules;
     }
 
     /**
@@ -92,7 +80,7 @@ public class DigitRuleManager {
      */
     public static List<DigitRule> getRules() {
         List<DigitRule> rules = new ArrayList<DigitRule>();
-        for (Map.Entry<String, List<DigitRule>> entry : flowRules.entrySet()) {
+        for (Map.Entry<String, List<DigitRule>> entry : digitRules.entrySet()) {
             rules.addAll(entry.getValue());
         }
         return rules;
@@ -108,12 +96,12 @@ public class DigitRuleManager {
     }
 
     static Map<String, List<DigitRule>> getDigitRuleMap() {
-        return flowRules;
+        return digitRules;
     }
 
 
     public static boolean hasConfig(String resource) {
-        return flowRules.containsKey(resource);
+        return digitRules.containsKey(resource);
     }
 
     public static boolean isOtherOrigin(String origin, String resourceName) {
@@ -121,7 +109,7 @@ public class DigitRuleManager {
             return false;
         }
 
-        List<DigitRule> rules = flowRules.get(resourceName);
+        List<DigitRule> rules = digitRules.get(resourceName);
 
         if (rules != null) {
             for (DigitRule rule : rules) {
@@ -140,20 +128,20 @@ public class DigitRuleManager {
         public void configUpdate(List<DigitRule> value) {
             Map<String, List<DigitRule>> rules = buildDigitRuleMap(value);
             if (rules != null) {
-                flowRules.clear();
-                flowRules.putAll(rules);
+                digitRules.clear();
+                digitRules.putAll(rules);
             }
-            RecordLog.info("[DigitRuleManager] Digit rules received: " + flowRules);
+            RecordLog.info("[DigitRuleManager] Digit rules received: " + digitRules);
         }
 
         @Override
         public void configLoad(List<DigitRule> conf) {
             Map<String, List<DigitRule>> rules = buildDigitRuleMap(conf);
             if (rules != null) {
-                flowRules.clear();
-                flowRules.putAll(rules);
+                digitRules.clear();
+                digitRules.putAll(rules);
             }
-            RecordLog.info("[DigitRuleManager] Digit rules loaded: " + flowRules);
+            RecordLog.info("[DigitRuleManager] Digit rules loaded: " + digitRules);
         }
     }
 

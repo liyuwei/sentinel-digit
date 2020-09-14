@@ -22,8 +22,11 @@ import com.alibaba.csp.sentinel.slotchain.AbstractLinkedProcessorSlot;
 import com.alibaba.csp.sentinel.slotchain.ResourceWrapper;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.spi.SpiOrder;
+import com.alibaba.csp.sentinel.util.function.Function;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ Author     ：l.yw
@@ -46,7 +49,7 @@ public class DigitSlot extends AbstractLinkedProcessorSlot<DefaultNode> {
         if (args == null || args.length != 1) return;
 
         //
-        List<DigitRule> digitRules = DigitRuleManager.getDigitRuleMap().get(r.getName());
+        Collection<DigitRule> digitRules = ruleProvider.apply(r.getName());
 
         if (digitRules == null || digitRules.isEmpty()) {
             return;
@@ -70,4 +73,14 @@ public class DigitSlot extends AbstractLinkedProcessorSlot<DefaultNode> {
         fireExit(context, r, count, args);
 //        System.out.println("DegradeSlot exit | out");
     }
+
+
+    private final Function<String, Collection<DigitRule>> ruleProvider = new Function<String, Collection<DigitRule>>() {
+        @Override
+        public Collection<DigitRule> apply(String resource) {
+            // Flow rule map should not be null.
+            Map<String, List<DigitRule>> digitRules = DigitRuleManager.getDigitRules();
+            return digitRules.get(resource);
+        }
+    };
 }

@@ -42,11 +42,7 @@ public class DigitRule extends AbstractRule {
     DigitRuleData data;
 
     public boolean checkoutPass(String digitNumStr) {
-        if (data == null) {
-            data = new DigitRuleData(this);
-            this.len = Math.max(parseDigitNumLen(), 1);
-            System.out.println(this.toString());
-        }
+        build();
         String subNum = digitNumStr;
         int length = digitNumStr.length();
         if (length > len) {
@@ -59,6 +55,15 @@ public class DigitRule extends AbstractRule {
         return !filter;
 
     }
+
+    public void build() {
+        if (data == null) {
+            data = new DigitRuleData(this);
+            this.len = Math.max(parseDigitNumLen(), 1);
+            System.out.println(this.toString());
+        }
+    }
+
 
     private int parseDigitNumLen() {
         int pm = passMolecule;
